@@ -12,6 +12,7 @@
               :element="element"
               :ref="'el_' + i"
               class="mb-4"
+              @submit="handleSubmit"
           />
       </div>
     </transition>
@@ -50,6 +51,9 @@ export default {
     }
   },
   methods: {
+    handleSubmit() {
+      this.$emit('submit')
+    },
     next() {
       if(this.sections.length - 1 > this.currentSection) {
         this.currentSection++;

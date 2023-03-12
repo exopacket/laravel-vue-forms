@@ -1,25 +1,26 @@
 <template>
   <div>
-    <div className="flex justify-between" v-if="!(!title && !cornerText)">
-      <label className="block text-sm font-medium leading-6 text-gray-900">{{ title }}</label>
-      <span className="text-sm leading-6 text-gray-500" v-if="cornerText">{{ cornerText }}</span>
+    <div class="flex justify-between" v-if="!(!title && !cornerText)">
+      <label class="block text-sm font-medium leading-6 text-gray-900">{{ title }}</label>
+      <span class="text-sm leading-6 text-gray-500" v-if="cornerText">{{ cornerText }}</span>
     </div>
-    <div className="relative mt-2 rounded-md">
-      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3" v-if="prependIcon">
+    <div class="relative mt-2 rounded-md">
+      <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3" v-if="prependIcon">
         <Icon :name="prependIcon" shade="400" color="gray" size="18"/>
       </div>
-      <input type="password"
+      <input type="text"
              :class="style + ' ' + (prependIcon !== null ? 'pl-10' : '')"
              :placeholder="placeholder"
              v-model="input"
-             @input="onChange"
+             @input="this.validationError = null"
+             @keyup.enter="$emit('submit')"
       />
-      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3" v-if="validationError">
+      <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3" v-if="validationError">
         <Icon name="exclamation-circle-fill" shade="600" color="red" size="18"/>
       </div>
     </div>
-    <p className="mt-2 text-sm text-red-600" v-if="validationError">{{ validationError }}</p>
-    <p className="mt-2 text-sm text-gray-500" v-if="!validationError && helpText">{{ helpText }}</p>
+    <p class="mt-2 text-sm text-red-600" v-if="validationError">{{ validationError }}</p>
+    <p class="mt-2 text-sm text-gray-500" v-if="!validationError && helpText">{{ helpText }}</p>
   </div>
 </template>
 
@@ -54,22 +55,19 @@ export default {
   },
   methods: {
     value() {
-      if (this.validate()) return this.input
+      if(this.validate()) return this.input
       return null
     },
     validate() {
       const trimmed = this.input.trim()
-      if (trimmed === '' && this.required)
+      if(trimmed === '' && this.required)
         return this.invalid(this.title + " is required.")
       return true;
     },
     invalid(msg, clear = false) {
-      if (clear) this.value = ""
+      if(clear) this.value = ""
       this.validationError = msg
       return false;
-    },
-    onChange() {
-      this.validationError = null
     },
   }
 }

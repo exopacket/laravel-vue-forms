@@ -1,7 +1,7 @@
 <template>
 
   <div>
-    <StackedForm :error="error" :sections="def.sections" :attrs="def.layout.attrs" :ref="def.name" v-if="def.layout.name === 'Stacked'" />
+    <StackedForm :error="error" :sections="def.sections" :attrs="def.layout.attrs" :ref="def.name" v-if="def.layout.name === 'Stacked'" @submit="submit"/>
   </div>
 
 </template>
@@ -20,6 +20,9 @@ export default {
     form: {
       type: Object,
       required: true,
+    },
+    action: {
+      type: String
     }
   },
   data() {
@@ -27,14 +30,17 @@ export default {
       def: this.form.default,
       independentSections: this.form.default.layout.attrs.independent ?? false,
       error: null,
+      requestPath: this.action ?? null
     }
   },
   methods: {
-    async submit(path) {
+    async submit(path = null) {
+      if(path === null) path = this.requestPath
+      if(path === null) return
       this.error = null
       if(this.$refs[this.def.name].validate()) {
         let data = this.$refs[this.def.name].values()
-        let res = await new ApiCall(path, data).push("remember", true).post()
+        let res = await new ApiCall(path, data).post()
         res.handle((data) => {
           if(data.type === "error") {
             this.error = {

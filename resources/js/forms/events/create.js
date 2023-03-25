@@ -1,19 +1,19 @@
 export default {
 
-    name: "LoginForm",
+    name: "CreateEventForm",
 
     layout: {
-        name: "Stacked",
+        name: "StackedSteps",
         attrs: {
             //showDivider: true,
-            //independent: true,
+            // independent: true,
         }
     },
 
     sections: [
         {
-            // title: "My title",
-            // subtitle: "My subtitle",
+            title: "My title",
+            subtitle: "My subtitle",
             actions: [
                 {
                     type: "submit",
@@ -22,30 +22,25 @@ export default {
             ],
             elements: [
                 {
+                    key: "full_name",
+                    id: "create-name",
+                    type: "text",
+                    title: "Full Name",
+                    required: true,
+                },
+                {
                     key: "contact",
-                    id: "login-contact",
+                    id: "create-contact",
                     type: "text",
                     title: "Email address or Phone",
                     required: true,
                 },
                 {
                     key: "password",
-                    id: "login-password",
+                    id: "create-password",
                     type: "password",
                     title: "Password",
                     required: true,
-                },
-                // {
-                //     type: "row",
-                //     children: [
-                //         {}
-                //     ]
-                // }
-                {
-                    key: "remember",
-                    id: "login-remember",
-                    type: "login-remember",
-                    forgotLink: "/forgot"
                 },
             ]
         },

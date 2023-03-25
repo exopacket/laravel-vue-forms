@@ -1,14 +1,5 @@
 import axios from "axios";
 import ApiResult from "./api-result.js";
-
-let token = document.head.querySelector('meta[name="csrf-token"]');
-
-if (token) {
-    axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
-} else {
-    console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
-}
-
 export class ApiCall {
 
     parameters = []
@@ -51,7 +42,6 @@ export class ApiCall {
         for(let i=0; i<this.parameters.length; i++) {
             params[this.parameters[i].key] = this.parameters[i].value;
         }
-        params['csrf_token'] = token;
         return params;
     }
 
@@ -67,6 +57,25 @@ export class ApiCall {
         return obj;
     }
 
+    async postAsync(loaderText = null, loaderCallback = null) {
+        let resp = {}
+        try {
+            if(loaderCallback) {
+                let loader = {
+                    style: 1,
+                    message: loaderText
+                }
+                loaderCallback(loader)
+            }
+            let data = this.data();
+            resp = await axios.post("/api" + this.path, data);
+        } catch (e) {
+            resp = e.response ?? false
+        }
+        let obj = new ApiResult(resp, loaderCallback)
+        return obj;
+    }
+
     async get() {
         let resp = {}
         try {
@@ -77,6 +86,26 @@ export class ApiCall {
             resp = e.response ?? false
         }
         let obj = new ApiResult(resp)
+        return obj;
+    }
+
+    async getAsync(loaderText = null, loaderCallback = null) {
+        let resp = {}
+        try {
+            if(loaderCallback) {
+                let loader = {
+                    style: 1,
+                    message: loaderText
+                }
+                loaderCallback(loader)
+            }
+            let data = this.data();
+            let url = "/api" + this.path + "?" + this.encodeGetParams(data);
+            resp = await axios.get(url);
+        } catch (e) {
+            resp = e.response ?? false
+        }
+        let obj = new ApiResult(resp, loaderCallback)
         return obj;
     }
 

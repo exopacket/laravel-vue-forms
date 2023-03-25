@@ -66,7 +66,14 @@ export default {
       this.sections.forEach((section, i) => {
         if(this.independentSections && !(this.currentSection === i)) return
         section.elements.forEach((element, index) => {
-          formData.push([element.key, this.$refs['el_' + i][index].value()])
+          if(element.type === 'row') {
+              let values = this.$refs['el_' + i][index].value()
+              element.children.forEach((child, j) => {
+                formData.push([child.key, values[j]])
+              })
+          } else {
+            formData.push([element.key, this.$refs['el_' + i][index].value()])
+          }
         })
       })
       return formData
@@ -98,5 +105,6 @@ export default {
 </script>
 
 <style scoped>
+
 .slide-enter-active,.slide-leave-active {  transition: all 0.75s ease-out;}.slide-enter-to {  position: absolute;  right: 0;}.slide-enter-from {  position: absolute;  right: -100%;}.slide-leave-to {  position: absolute;  left: -100%;}.slide-leave-from {  position: absolute;  left: 0;}
 </style>

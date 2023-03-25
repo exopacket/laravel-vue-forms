@@ -10,8 +10,9 @@ export default class ApiResult {
     headers = []
     data = {}
     path = ""
+    callback = null
 
-    constructor(obj) {
+    constructor(obj, callback) {
 
         this.status = obj.status;
         this.statusText = obj.statusText
@@ -21,10 +22,13 @@ export default class ApiResult {
         this.headers = obj.headers;
         this.data = obj.data;
         this.path = obj.config.url;
+        this.callback = callback;
 
     }
 
     handle(callback = null) {
+
+        if(callback === null && this.callback) callback = this.callback
 
         if(this.data.redirect.is) {
             router.visit(this.data.redirect.href, { method: 'get' })
